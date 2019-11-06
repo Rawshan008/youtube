@@ -3,3 +3,7 @@
   border: 1px solid #ddd;
   box-shadow: 0 0 10px #ddd;
 }
+.thumbnailImg{
+  width: 100%;
+  cursor: pointer;
+}

@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {Col, Container, Form, ResponsiveEmbed, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, Modal, ResponsiveEmbed, Row} from "react-bootstrap";
 const axios = require('axios');
 
 const API = 'AIzaSyBDxIsFKm3sOxMo4_Yt02sovL4yKOwgAEY';
@@ -12,6 +12,7 @@ class Youtube extends Component {
 
         this.state = {
             items: [],
+            showMod: false
         }
 
         this.channelIdSubmit = this.channelIdSubmit.bind(this);
@@ -26,10 +27,13 @@ class Youtube extends Component {
         axios.get(finalUrl)
             .then(res=>{
                 var items = res.data.items;
-                const result = items.map(item=> "https://www.youtube.com/embed/"+item.id.videoId);
+                const result = items.map(item=> item.id.videoId);
                 this.setState({items:result})
             })
     }
+
+    showModal = () =>{this.setState({showMod: true})}
+    hideModal = () =>{this.setState({showMod: false})}
     render() {
 
 
@@ -55,12 +59,24 @@ class Youtube extends Component {
                     <Row>
                         {
                             this.state.items.map((link,i)=>{
+                                var thumbnail = `https://i.ytimg.com/vi/${link}/maxresdefault.jpg`;
+                                var videos = `https://www.youtube.com/embed/${link}`;
                                 var allResult = <Col key={i} lg={4} md={6} sm={12}>
                                     <div className="singleVideo">
-                                        <ResponsiveEmbed aspectRatio="16by9">
-                                            <embed type="image/svg+xml" src={link}/>
-                                        </ResponsiveEmbed>
+                                        <img className="thumbnailImg" onClick={this.showModal} src={thumbnail} alt=""/>
                                     </div>
+                                    <Modal size="lg" show={this.state.showMod}>
+                                        <Modal.Body>
+                                            <ResponsiveEmbed aspectRatio="16by9">
+                                                <embed type="image/svg+xml" src={videos}/>
+                                            </ResponsiveEmbed>
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="danger" onClick={this.hideModal}>
+                                                Close
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>
                                 </Col>
 
                                 return allResult;
